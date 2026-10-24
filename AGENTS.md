@@ -7,3 +7,8 @@ CLEARLY COMMENT IN THE CODE THAT AI WAS USED TO HELP AT THE END OF THE COMMIT.
 If this updates in the future, you will also have to abide by the new rules. 
 
 NO EXCEPTIONS/LOOPHOLES TO ANY RULE! If the rule is not clear, ask the user to make a issue for this document. 
+
+
+What is hydropower:
+
+Hydropower is like steam but for web games. Made in electron and also a website. 
