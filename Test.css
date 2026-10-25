@@ -1,12 +1,17 @@
  button {
+  margin: auto;
+  width: 200px;
   color: #0228fd;
   text-align: Center;
   border-radius: 25px;
-  border: 10px solid #00cccc;
+  border: 2px solid #00cccc;
   padding: 20px;
-  width: 200px;
-  height: 150px; 
+  width: 216px;
+  height: 100px; 
   cursor: pointer
+}
+h1 {
+  text-align: center;
 }
 /* I learned this all like today, on this commit so uhh will have bugs */ 
 
