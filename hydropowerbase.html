@@ -82,13 +82,13 @@ body.playing main>section:last-child>:is(canvas,#stat,#vars,#con){display:block}
 </style>
 </head>
 <body>
-<nav id="plat"><strong id="pbrand"></strong><div id="ptabs"><button data-v="store">Store</button><button data-v="lib">Library</button><button data-v="create">Create</button><button data-v="shop">Points shop</button></div><span class="sp"></span><span id="toast" role="status"></span><strong id="wb"></strong><button id="pexit" hidden>Exit game</button></nav>
+<nav id="plat"><strong id="pbrand"></strong><div id="ptabs"><button data-v="store">Store</button><button data-v="lib">Library</button><button data-v="create">Create</button><button data-v="shop">Points shop</button></div><span class="sp"></span><span id="toast" role="status"></span><strong id="wb"></strong><button id="pexit" >Exit game</button></nav>
 <div id="v-store" class="view"><h2 style="margin-top:0">Store</h2>
 <div class="row"><input type="text" id="fq" placeholder="Search games" aria-label="Search games"><label>Type <select id="fk"><option value="">All</option><option value="hydro">Hydropower games</option><option value="normal">Normal games</option></select></label><label>Price <select id="fp"><option value="">Any</option><option value="free">Free</option><option value="aff">I can afford</option><option value="own">Owned</option></select></label><label>Sort <select id="fs"><option value="new">Newest</option><option value="lo">Price low to high</option><option value="hi">Price high to low</option></select></label></div>
 <div id="gcards" class="cards"></div>
 <details><summary>Share a game</summary><div class="row"><input type="text" id="gt" placeholder="Title" aria-label="Title"><input type="text" id="gd" placeholder="Short description" aria-label="Description"><label>Price (HB) <input type="number" id="gp" min="0" max="500" value="0" style="width:70px"></label><label>Type <select id="gk"><option value="hydro">Hydropower game (current Electricity project)</option><option value="normal">Normal game (link)</option></select></label><input type="text" id="gu" placeholder="https:// link for normal games" aria-label="Game link"><button id="gpub">Share</button></div><div id="gmsg" role="status"></div></details></div>
-<div id="v-lib" class="view" hidden><h2 style="margin-top:0">Library</h2><div id="lcards" class="cards"></div></div>
-<div id="v-shop" class="view" hidden><h2 style="margin-top:0">Points shop</h2><div class="row"><span>Hydro Points cost 5 Hydrobucks each.</span><input type="number" id="hpn" min="1" value="1" style="width:70px" aria-label="Hydro Points to get"><button id="hpbuy">Get Hydro Points</button></div><div id="scards" class="cards"></div></div>
+<div id="v-lib" class="view" ><h2 style="margin-top:0">Library</h2><div id="lcards" class="cards"></div></div>
+<div id="v-shop" class="view" ><h2 style="margin-top:0">Points shop</h2><div class="row"><span>Hydro Points cost 5 Hydrobucks each.</span><input type="number" id="hpn" min="1" value="1" style="width:70px" aria-label="Hydro Points to get"><button id="hpbuy">Get Hydro Points</button></div><div id="scards" class="cards"></div></div>
 <div id="v-create"><header>
 <h1><span id="logo"></span>Electricity<em id="plusTag"></em></h1>
 <button id="run">▶ Clock in</button><button id="pause">Pause</button><button id="stp">Step</button><button id="stop">■ Clock out</button>
@@ -303,8 +303,8 @@ return{sel:0,sc:0,art:Object.fromEntries(Object.entries(p.art&&typeof p.art==='o
 sprites:p.sprites.slice(0,30).map(s=>({n:String(s.n||'Sprite').slice(0,30),x:num(s.x,0),y:num(s.y,0),d:num(s.d,90),s:num(s.s,100),c:/^#[0-9a-f]{6}$/i.test(s.c)?s.c:'#888888',look:String(s.look||'').slice(0,30),say:'',
 scripts:(Array.isArray(s.scripts)?s.scripts:[]).slice(0,10).map(c=>({hat:c.hat==='key'?'key':'flag',key:String(c.key||'a').slice(0,12),b:(Array.isArray(c.b)?c.b:[]).slice(0,300).filter(x=>x&&SPEC[x.t]).map(x=>({t:x.t,a:(Array.isArray(x.a)?x.a:[]).slice(0,4).map(v=>typeof v==='number'?v:String(v).slice(0,80))}))}))}))}}
 function play(g){stopAll(true);let p;try{p=clean(JSON.parse(g.data))}catch(e){}if(!p)return toast('This game could not be loaded');
-draft=JSON.stringify(P);prevPlus=plus;P=p;setMode(false);PG=g;document.body.classList.add('playing');$('#pexit').hidden=false;show('create');sprites();rs();insp();assets();startRun()}
-function exitPlay(){stopAll(true);if(draft)P=JSON.parse(draft);setMode(prevPlus);PG=null;document.body.classList.remove('playing');$('#pexit').hidden=true;sprites();rs();insp();assets();show('lib')}
+draft=JSON.stringify(P);prevPlus=plus;P=p;setMode(false);PG=g;document.body.classList.add('playing');$('#pexit')=false;show('create');sprites();rs();insp();assets();startRun()}
+function exitPlay(){stopAll(true);if(draft)P=JSON.parse(draft);setMode(prevPlus);PG=null;document.body.classList.remove('playing');$('#pexit')=true;sprites();rs();insp();assets();show('lib')}
 function buy(g){if(W.own[g.id])return;if(W.hb<g.price)return toast('Not enough Hydrobucks');W.hb-=g.price;W.own[g.id]=1;wSave();toast('Added '+g.title+' to your library');rStore();rLib()}
 function gcard(g){const c=document.createElement('div');c.className='card';const h=document.createElement('h3');h.textContent=g.title;
 const m=document.createElement('p');m.textContent=(g.kind==='hydro'?'Hydropower game':'Normal game')+' · '+(g.price?g.price+' HB':'Free')+(g.author&&g.author===UID?' · yours':'');
@@ -327,7 +327,7 @@ b.onclick=()=>{if(own)return onUse();W.hp-=cost;onBuy();wSave();rShop();toast('U
 function rShop(){const el=$('#scards');el.innerHTML='';
 Object.entries(HT).forEach(([k,t])=>el.append(scard(t.name+' theme',t.cost,!!W.th[k],()=>{W.th[k]=1;themeOpts()},()=>{$('#theme').value=k;setTheme(k);try{localStorage.setItem('electricity.theme',k)}catch(e){}},['bg','panel','steel','hot','glass','ink'].map(x=>t.vars[x]))));
 Object.entries(SART).forEach(([k,a])=>el.append(scard(a.n+' pixel asset',a.cost,!!W.as[k],()=>{W.as[k]=1;assets()},()=>show('create'),null,k)))}
-function show(v){['store','lib','create','shop'].forEach(k=>$('#v-'+k).hidden=k!==v);document.querySelectorAll('#ptabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===v));
+function show(v){['store','lib','create','shop'].forEach(k=>$('#v-'+k)=k!==v);document.querySelectorAll('#ptabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===v));
 if(v!=='create'&&running)stopAll(true);if(v==='store')rStore();if(v==='lib')rLib();if(v==='shop')rShop()}
 document.querySelectorAll('#ptabs button').forEach(b=>b.onclick=()=>{if(!PG)show(b.dataset.v)});
 $('#pexit').onclick=exitPlay;
@@ -466,4 +466,5 @@ $('#spd').onchange=e=>speed=+e.target.value;
 $('#addflag').onclick=()=>{cur().scripts.push({hat:'flag',key:'ArrowRight',b:[]});P.sc=cur().scripts.length-1;rs()};
 $('#addkey').onclick=()=>{cur().scripts.push({hat:'key',key:'ArrowRight',b:[]});P.sc=cur().scripts.length-1;rs()};
 $('#adds').onclick=()=>{const n=P.sprites.length+1;P.sprites.push({n:'Sprite'+n,x:0,y:0,d:90,s:100,c:'#1b6b2b',look:'cone',say:'',scripts:[{hat:'flag',key:'ArrowRight',b:[]}]});P.sel=n-1;P.sc=0;sprites();rs();insp()};
-$('#dels').onclick=()=>{if(P.sprites.length<2)return log('Keep at least one sprite');P.sprites.splice(P.sel,1);P.sel=0;P.sc=0;sprites();rs();insp()}... (3 KB left)
+$('#dels').onclick=()=>{if(P.sprites.length<2)return log('Keep at least one sprite');P.sprites.splice(P.sel,1);P.sel=0;P.sc=0;sprites();rs();insp()}
+</script>
